@@ -1,0 +1,4 @@
+name: Sample3
+version: '1.0-SNAPSHOT'
+main: org.example.plugin.sample3.Sample3
+api-version: '1.21'
