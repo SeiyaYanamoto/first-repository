@@ -87,11 +87,11 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
     if (playerScoreList.isEmpty()){
       playerScore  = addNewPlayer(player);
     } else {
-       playerScore = playerScoreList.stream()
-           .findFirst()
-           .map(ps -> ps.getPlayerName().equals(player.getName())
-          ? ps
-          : addNewPlayer(player)).orElse(playerScore);
+      playerScore = playerScoreList.stream()
+          .findFirst()
+          .map(ps -> ps.getPlayerName().equals(player.getName())
+              ? ps
+              : addNewPlayer(player)).orElse(playerScore);
     }
 
     playerScore.setGameTime(GAME_TIME);
