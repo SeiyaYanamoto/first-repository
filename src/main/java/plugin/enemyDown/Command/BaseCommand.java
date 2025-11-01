@@ -12,26 +12,32 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BaseCommand implements CommandExecutor{
 
   @Override
-  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+  public boolean onCommand(@NotNull CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player player) {
-      return onExecutePlayerCommand(player);
+      return onExecutePlayerCommand(player, command ,label ,args);
     } else {
-      return onExecuteNPCCommand(sender);
+      return onExecuteNPCCommand(sender, command ,label ,args);
     }
   }
 
   /**
    * コマンド実行者がプレイヤーだった場合に実行します。
    * @param player コマンドを実行したプレイヤー
+   * @param command コマンド
+   * @param label ラベル
+   * @param args コマンド引数
    * @return 実行処理の有無
    */
-  public abstract boolean onExecutePlayerCommand(Player player);
+  public abstract boolean onExecutePlayerCommand(Player player, Command command, String label, String[] args);
 
   /**
    * コマンド実行者がプレイヤー以外だった場合に実行します。
    *
    * @param sender コマンド実行者
+   * @param command コマンド
+   * @param label ラベル
+   * @param args コマンド引数
    * @return 実行処理の有無
    */
-  public abstract boolean onExecuteNPCCommand(CommandSender sender);
+  public abstract boolean onExecuteNPCCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args);
 }
