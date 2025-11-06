@@ -220,24 +220,6 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
             30,60,30);
 
 
-
-
-
-//        try (Connection con = DriverManager.getConnection(
-//            "jdbc:mysql://localhost:3306/spigot_server",
-//            "root",
-//            "hM2vzpVZ");
-//            Statement statement = con.createStatement()) {
-//
-//          statement.executeUpdate(
-//              "insert player_score(player_name, score, difficulty, registered_at) "
-//                  + "values('" + nowExecutingPlayer.getPlayerName() + "', " + nowExecutingPlayer.getScore() + ", '"
-//                  + difficulty + "', now());");
-//
-//        } catch (SQLException e) {
-//          e.printStackTrace();
-//        }
-
         spowEntityList.forEach(Entity::remove);
         spowEntityList.clear();
 
