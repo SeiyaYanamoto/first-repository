@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Enemydownのゲームを実行する際のスコア情報を扱うオブジェクト
+ * Enemydownのゲームを実行する際のプレイヤー情報を扱うオブジェクト
  * プレイヤー名、合計点数、日時などの情報を持つ。
  */
 @Getter
 @Setter
-public class PlayerScore {
+public class ExecutingPlayer {
 
   private String playerName;
 
@@ -17,7 +17,7 @@ public class PlayerScore {
 
   private int gameTime;
 
-  public PlayerScore(String playerName) {
+  public ExecutingPlayer(String playerName) {
     this.playerName = playerName;
   }
 }
