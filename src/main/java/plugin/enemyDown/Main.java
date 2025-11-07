@@ -1,8 +1,8 @@
 package plugin.enemyDown;
 
+import java.util.Objects;
 import plugin.enemyDown.Command.EnemyDownCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import plugin.enemyDown.Command.EnemySpawnCommand;
 
@@ -13,8 +13,8 @@ public final class Main extends JavaPlugin {
     EnemyDownCommand enemyDownCommand = new EnemyDownCommand(this);
     EnemySpawnCommand enemySpawnCommand = new EnemySpawnCommand(this);
     Bukkit.getPluginManager().registerEvents(enemyDownCommand, this);
-    getCommand("enemyDown").setExecutor(enemyDownCommand);
-    getCommand("enemySpawn").setExecutor(enemySpawnCommand);
+    Objects.requireNonNull(getCommand("enemyDown")).setExecutor(enemyDownCommand);
+    Objects.requireNonNull(getCommand("enemySpawn")).setExecutor(enemySpawnCommand);
   }
 
 

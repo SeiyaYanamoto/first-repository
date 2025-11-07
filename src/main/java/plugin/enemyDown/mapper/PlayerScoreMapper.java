@@ -11,5 +11,5 @@ public interface PlayerScoreMapper {
   List<PlayerScore> selectList();
 
   @Insert("insert player_score(player_name, score, difficulty, registered_at) values (#{playerName}, #{score}, #{difficulty}, now())")
-  int insert(PlayerScore playerScore);
+  void insert(PlayerScore playerScore);
 }
