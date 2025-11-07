@@ -1,12 +1,6 @@
 package plugin.enemyDown.Command;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +28,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import plugin.enemyDown.Main;
+import plugin.enemyDown.PlayerScoreData;
 import plugin.enemyDown.data.ExecutingPlayer;
 import plugin.enemyDown.mapper.PlayerScoreMapper;
 import plugin.enemyDown.mapper.data.PlayerScore;
@@ -53,40 +48,24 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
   public static final String NONE = "none";
   public static final String LIST = "list";
 
-  private Main main;
-  private List<ExecutingPlayer> executingPlayerList = new ArrayList<>();
-  private List<Entity> spowEntityList = new ArrayList<>();
+  private final Main main;
+  private PlayerScoreData playerScoreData = new PlayerScoreData();
 
-  private SqlSessionFactory sqlSessionFactory;
+  private final List<ExecutingPlayer> executingPlayerList = new ArrayList<>();
+  private final List<Entity> spowEntityList = new ArrayList<>();
+
+
 
 
   public EnemyDownCommand(Main main) {
     this.main = main;
-
-    try {
-      InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
-      this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override
   public boolean onExecutePlayerCommand(Player player, Command command, String label, String[] args) {
     if (args.length == 1 && LIST.equals(args[0])) {
-
-      try(SqlSession session = sqlSessionFactory.openSession()) {
-        PlayerScoreMapper mapper = session.getMapper(PlayerScoreMapper.class);
-        List<PlayerScore> playerScoreList = mapper.selectList();
-
-        for (PlayerScore playerScore : playerScoreList) {
-          player.sendMessage(playerScore.getId() + " | "
-              + playerScore.getPlayerName() + " | "
-              + playerScore.getScore() + " | "
-              + playerScore.getDifficulty() + " | "
-              + playerScore.getRegisteredAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        }
-      }
+      // 最初の引数が「list」だったらスコアを一覧表示して処理を終了する。
+      sendPlayerScoreList(player);
       return false;
     }
 
@@ -101,6 +80,22 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
 
     gamePlay(player, nowExecutingPlayer, difficulty);
     return true;
+  }
+
+  /**
+   * 現在登録されているスコアの一覧をメッセージに送る。
+   *
+   * @param player プレイヤー
+   */
+  private void sendPlayerScoreList(Player player) {
+    List<PlayerScore> playerScoresList = playerScoreData.selectList();
+    for (PlayerScore playerScore : playerScoresList) {
+      player.sendMessage(playerScore.getId() + " | "
+          + playerScore.getPlayerName() + " | "
+          + playerScore.getScore() + " | "
+          + playerScore.getDifficulty() + " | "
+          + playerScore.getRegisteredAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }
   }
 
   /**
@@ -119,7 +114,7 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
   }
 
   @Override
-  public boolean onExecuteNPCCommand(CommandSender sender, Command command, String label, String[] args) {
+  public boolean onExecuteNPCCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
     return false;
   }
 
@@ -225,14 +220,10 @@ public class EnemyDownCommand extends BaseCommand implements Listener {
 
         removePotionEffect(player);
 
-        // スコア登録処理
-        try(SqlSession session = sqlSessionFactory.openSession(true)) {
-          PlayerScoreMapper mapper = session.getMapper(PlayerScoreMapper.class);
-          mapper.insert(
-              new PlayerScore(nowExecutingPlayer.getPlayerName()
-                  , nowExecutingPlayer.getScore()
-                  , difficulty));
-        }
+        playerScoreData.insert(new PlayerScore(nowExecutingPlayer.getPlayerName()
+            , nowExecutingPlayer.getScore()
+            , difficulty));
+
 
         return;
       }
